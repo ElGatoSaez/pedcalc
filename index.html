@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PedCalc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="logo">Ped<span>Calc</span></div>
+    <div class="topbar-tag" id="topbar-tag">Dosis Pediátrica</div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- ══ TAB: DOSIS ══ -->
+    <div class="tab-page active" id="tab-dosis">
+
+      <!-- RESULT -->
+      <div class="result-card">
+        <div class="result-inner">
+          <div id="result-placeholder" class="placeholder">
+            <div class="placeholder-num">— ml</div>
+            <div>ingresa peso y medicamento</div>
+          </div>
+          <div id="result-content" class="hidden">
+            <div class="result-drug" id="res-drug">—</div>
+            <div class="result-dose-row">
+              <div class="result-vol" id="res-vol">—</div>
+              <div class="result-unit" id="res-unit">ml</div>
+            </div>
+            <div class="result-note" id="res-note">—</div>
+            <div class="result-meta">
+              <div>
+                <div class="meta-label">Dosis</div>
+                <div class="meta-val" id="res-mg">—</div>
+              </div>
+              <div>
+                <div class="meta-label">Frecuencia</div>
+                <div class="meta-val" id="res-freq">—</div>
+              </div>
+              <div>
+                <div class="meta-label">Dosis/kg</div>
+                <div class="meta-val" id="res-mgkg">—</div>
+              </div>
+              <div>
+                <div class="meta-label">Vía</div>
+                <div class="meta-val" id="res-route">—</div>
+              </div>
+            </div>
+            <div id="res-alert-wrap"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- WEIGHT -->
+      <div class="field-group">
+        <label class="field-label">Peso del paciente</label>
+        <div class="weight-wrap">
+          <input type="number" id="weight-in" min="0.5" max="150" step="0.1" placeholder="0.0">
+          <span class="weight-unit-label">kg</span>
+        </div>
+      </div>
+
+      <!-- DRUG SELECTOR -->
+      <div class="field-group">
+        <label class="field-label">Medicamento</label>
+        <div class="search-wrap" id="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="drug-search" placeholder="Buscar medicamento..." autocomplete="off">
+        </div>
+        <div class="drug-dropdown" id="drug-dropdown"></div>
+        <div class="selected-drug-bar" id="drug-bar">
+          <span class="selected-drug-name" id="sel-name">—</span>
+          <span class="change-link" onclick="clearDrug()">cambiar</span>
+        </div>
+      </div>
+
+      <!-- ROUTE -->
+      <div class="field-group hidden" id="route-group">
+        <label class="field-label">Vía de administración</label>
+        <div class="chips" id="route-chips"></div>
+      </div>
+
+      <!-- PRESENTATION -->
+      <div class="field-group hidden" id="pres-group">
+        <label class="field-label">Presentación</label>
+        <div class="select-wrap">
+          <select id="pres-select"></select>
+          <span class="select-arrow">▾</span>
+        </div>
+      </div>
+
+    </div><!-- /tab-dosis -->
+
+    <!-- ══ TAB: NEONATAL ══ -->
+    <div class="tab-page" id="tab-neonatal">
+      <div class="coming-soon">
+        <div class="coming-soon-icon">🌡</div>
+        <h3>Ictericia Neonatal</h3>
+        <p>Cálculo de necesidad de fototerapia según BTC, edad gestacional y factores de riesgo.</p>
+      </div>
+    </div>
+
+    <!-- ══ TAB: NUTRICIÓN ══ -->
+    <div class="tab-page" id="tab-nutricion">
+      <div class="coming-soon">
+        <div class="coming-soon-icon">📊</div>
+        <h3>Diagnóstico Nutricional</h3>
+        <p>P/E, T/E, P/T e IMC con percentiles OMS. Clasificación según Waterlow y OMS.</p>
+      </div>
+    </div>
+
+    <!-- ══ TAB: APGAR ══ -->
+    <div class="tab-page" id="tab-apgar">
+      <div class="coming-soon">
+        <div class="coming-soon-icon">👶</div>
+        <h3>APGAR</h3>
+        <p>Puntuación al minuto 1 y 5. Interpretación automática y orientación clínica.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="switchTab('dosis', this)">
+      <span class="nav-icon">⊕</span>
+      Dosis
+    </button>
+    <button class="nav-item" onclick="switchTab('neonatal', this)">
+      <span class="nav-icon">🌡</span>
+      Neonatal
+    </button>
+    <button class="nav-item" onclick="switchTab('nutricion', this)">
+      <span class="nav-icon">📊</span>
+      Nutrición
+    </button>
+    <button class="nav-item" onclick="switchTab('apgar', this)">
+      <span class="nav-icon">👶</span>
+      APGAR
+    </button>
+  </nav>
+
+</div><!-- /app-shell -->
+
+<script src="js/main.js" defer></script>
+</body>
+</html>

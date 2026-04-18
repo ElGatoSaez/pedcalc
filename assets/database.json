@@ -1,0 +1,378 @@
+{
+  "Paracetamol": {
+    "routes": {
+      "Oral": [
+        {
+          "label": "Gotas 100mg/ml",
+          "mgPerUnit": 100,
+          "unitVol": 1,
+          "unitLabel": "ml",
+          "freq": "Cada 6-8 hrs",
+          "dose": 15,
+          "doseMax": 75,
+          "doseAbsMax": 1000
+        },
+        {
+          "label": "Jarabe 120mg/5ml",
+          "mgPerUnit": 120,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "Cada 6-8 hrs",
+          "dose": 15,
+          "doseMax": 75,
+          "doseAbsMax": 1000
+        },
+        {
+          "label": "Jarabe 160mg/5ml",
+          "mgPerUnit": 160,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "Cada 6-8 hrs",
+          "dose": 15,
+          "doseMax": 75,
+          "doseAbsMax": 1000
+        },
+        {
+          "label": "Comprimido 500mg",
+          "mgPerUnit": 500,
+          "unitVol": 1,
+          "unitLabel": "comp.",
+          "freq": "Cada 6-8 hrs",
+          "dose": 15,
+          "doseMax": 75,
+          "doseAbsMax": 1000
+        }
+      ],
+      "EV": [
+        {
+          "label": "Solución 10mg/ml",
+          "mgPerUnit": 10,
+          "unitVol": 1,
+          "unitLabel": "ml",
+          "freq": "Cada 6 hrs",
+          "dose": 15,
+          "doseMax": 60,
+          "doseAbsMax": 1000
+        }
+      ]
+    }
+  },
+  "Ibuprofeno": {
+    "routes": {
+      "Oral": [
+        {
+          "label": "Suspensión 100mg/5ml",
+          "mgPerUnit": 100,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "Cada 8 hrs",
+          "dose": 10,
+          "doseMax": 40,
+          "doseAbsMax": 400
+        },
+        {
+          "label": "Suspensión 200mg/5ml",
+          "mgPerUnit": 200,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "Cada 8 hrs",
+          "dose": 10,
+          "doseMax": 40,
+          "doseAbsMax": 400
+        },
+        {
+          "label": "Comprimido 200mg",
+          "mgPerUnit": 200,
+          "unitVol": 1,
+          "unitLabel": "comp.",
+          "freq": "Cada 8 hrs",
+          "dose": 10,
+          "doseMax": 40,
+          "doseAbsMax": 400
+        }
+      ]
+    }
+  },
+  "Amoxicilina": {
+    "routes": {
+      "Oral": [
+        {
+          "label": "Suspensión 250mg/5ml",
+          "mgPerUnit": 250,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "Cada 8 hrs",
+          "dose": 25,
+          "doseMax": 100,
+          "doseAbsMax": 500
+        },
+        {
+          "label": "Suspensión 500mg/5ml",
+          "mgPerUnit": 500,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "Cada 8 hrs",
+          "dose": 25,
+          "doseMax": 100,
+          "doseAbsMax": 500
+        },
+        {
+          "label": "Cápsula 500mg",
+          "mgPerUnit": 500,
+          "unitVol": 1,
+          "unitLabel": "cáp.",
+          "freq": "Cada 8 hrs",
+          "dose": 25,
+          "doseMax": 100,
+          "doseAbsMax": 500
+        }
+      ]
+    }
+  },
+  "Amoxicilina/Clavulanato": {
+    "routes": {
+      "Oral": [
+        {
+          "label": "Suspensión 250mg/5ml",
+          "mgPerUnit": 250,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "Cada 8 hrs",
+          "dose": 25,
+          "doseMax": 90,
+          "doseAbsMax": 500
+        },
+        {
+          "label": "Comprimido 875mg",
+          "mgPerUnit": 875,
+          "unitVol": 1,
+          "unitLabel": "comp.",
+          "freq": "Cada 8-12 hrs",
+          "dose": 25,
+          "doseMax": 90,
+          "doseAbsMax": 875
+        }
+      ],
+      "EV": [
+        {
+          "label": "Vial 1g (reconstituido)",
+          "mgPerUnit": 1000,
+          "unitVol": 20,
+          "unitLabel": "ml",
+          "freq": "Cada 8 hrs",
+          "dose": 25,
+          "doseMax": 90,
+          "doseAbsMax": 1000
+        }
+      ]
+    }
+  },
+  "Azitromicina": {
+    "routes": {
+      "Oral": [
+        {
+          "label": "Suspensión 200mg/5ml",
+          "mgPerUnit": 200,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "1 vez al día x5d",
+          "dose": 10,
+          "doseMax": 10,
+          "doseAbsMax": 500
+        },
+        {
+          "label": "Comprimido 500mg",
+          "mgPerUnit": 500,
+          "unitVol": 1,
+          "unitLabel": "comp.",
+          "freq": "1 vez al día x5d",
+          "dose": 10,
+          "doseMax": 10,
+          "doseAbsMax": 500
+        }
+      ],
+      "EV": [
+        {
+          "label": "Ampolla 500mg/10ml",
+          "mgPerUnit": 500,
+          "unitVol": 10,
+          "unitLabel": "ml",
+          "freq": "1 vez al día",
+          "dose": 10,
+          "doseMax": 10,
+          "doseAbsMax": 500
+        }
+      ]
+    }
+  },
+  "Ondansetrón": {
+    "routes": {
+      "Oral": [
+        {
+          "label": "Jarabe 4mg/5ml",
+          "mgPerUnit": 4,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "Cada 8-12 hrs",
+          "dose": 0.15,
+          "doseMax": 0.45,
+          "doseAbsMax": 8
+        }
+      ],
+      "Sublingual": [
+        {
+          "label": "Liofilizado 4mg",
+          "mgPerUnit": 4,
+          "unitVol": 1,
+          "unitLabel": "comp.",
+          "freq": "Cada 8-12 hrs",
+          "dose": 0.15,
+          "doseMax": 0.45,
+          "doseAbsMax": 8
+        }
+      ],
+      "EV": [
+        {
+          "label": "Ampolla 2mg/ml",
+          "mgPerUnit": 2,
+          "unitVol": 1,
+          "unitLabel": "ml",
+          "freq": "Cada 8-12 hrs",
+          "dose": 0.15,
+          "doseMax": 0.45,
+          "doseAbsMax": 8
+        }
+      ]
+    }
+  },
+  "Salbutamol": {
+    "routes": {
+      "Inhalado": [
+        {
+          "label": "MDI 100mcg/puff",
+          "mgPerUnit": 0.1,
+          "unitVol": 1,
+          "unitLabel": "puff(s)",
+          "freq": "Cada 4-6 hrs",
+          "dose": 0.1,
+          "doseMax": 0.4,
+          "doseAbsMax": 2
+        }
+      ],
+      "Nebulización": [
+        {
+          "label": "Sol. 5mg/ml",
+          "mgPerUnit": 5,
+          "unitVol": 1,
+          "unitLabel": "ml",
+          "freq": "Cada 4-6 hrs",
+          "dose": 0.15,
+          "doseMax": 0.3,
+          "doseAbsMax": 5
+        }
+      ]
+    }
+  },
+  "Cetirizina": {
+    "routes": {
+      "Oral": [
+        {
+          "label": "Gotas 10mg/ml",
+          "mgPerUnit": 10,
+          "unitVol": 1,
+          "unitLabel": "ml",
+          "freq": "Cada 24 hrs",
+          "dose": 0.25,
+          "doseMax": 0.25,
+          "doseAbsMax": 10
+        },
+        {
+          "label": "Jarabe 5mg/5ml",
+          "mgPerUnit": 5,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "Cada 24 hrs",
+          "dose": 0.25,
+          "doseMax": 0.25,
+          "doseAbsMax": 10
+        },
+        {
+          "label": "Comprimido 10mg",
+          "mgPerUnit": 10,
+          "unitVol": 1,
+          "unitLabel": "comp.",
+          "freq": "Cada 24 hrs",
+          "dose": 0.25,
+          "doseMax": 0.25,
+          "doseAbsMax": 10
+        }
+      ]
+    }
+  },
+  "Metronidazol": {
+    "routes": {
+      "Oral": [
+        {
+          "label": "Suspensión 125mg/5ml",
+          "mgPerUnit": 125,
+          "unitVol": 5,
+          "unitLabel": "ml",
+          "freq": "Cada 8 hrs",
+          "dose": 7.5,
+          "doseMax": 22.5,
+          "doseAbsMax": 500
+        },
+        {
+          "label": "Comprimido 500mg",
+          "mgPerUnit": 500,
+          "unitVol": 1,
+          "unitLabel": "comp.",
+          "freq": "Cada 8 hrs",
+          "dose": 7.5,
+          "doseMax": 22.5,
+          "doseAbsMax": 500
+        }
+      ],
+      "EV": [
+        {
+          "label": "Solución 5mg/ml",
+          "mgPerUnit": 5,
+          "unitVol": 1,
+          "unitLabel": "ml",
+          "freq": "Cada 8 hrs",
+          "dose": 7.5,
+          "doseMax": 22.5,
+          "doseAbsMax": 500
+        }
+      ]
+    }
+  },
+  "Cloxacilina": {
+    "routes": {
+      "EV": [
+        {
+          "label": "Vial 1g",
+          "mgPerUnit": 1000,
+          "unitVol": 20,
+          "unitLabel": "ml",
+          "freq": "Cada 6 hrs",
+          "dose": 25,
+          "doseMax": 200,
+          "doseAbsMax": 2000
+        }
+      ],
+      "Oral": [
+        {
+          "label": "Cápsula 500mg",
+          "mgPerUnit": 500,
+          "unitVol": 1,
+          "unitLabel": "cáp.",
+          "freq": "Cada 6 hrs",
+          "dose": 12.5,
+          "doseMax": 100,
+          "doseAbsMax": 500
+        }
+      ]
+    }
+  }
+}

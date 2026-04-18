@@ -47,7 +47,7 @@ Sweepstakes participation is a **separate but integrated part** of this Agreemen
 
 ---
 
-## 5. Permissions for Code and Use (The "Open but Controlled" Part)
+## 5. Permissions for Code and Use
 
 You are **permitted** to:
 
