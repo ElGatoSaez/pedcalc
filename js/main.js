@@ -372,7 +372,7 @@ function renderAlerts({ capped, regimen, presentation, outputNotes, kg }) {
 }
 
 function compute() {
-  const kg = parseFloat(weightIn.value);
+  const kg = parseFloat(weightIn.value.replace(',', '.'));
   if (!kg || !state.drug || state.route === null || state.regimen === null || state.pres === null) {
     showPlaceholder();
     return;

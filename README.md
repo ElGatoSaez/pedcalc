@@ -1,6 +1,6 @@
 # pedcalc
 
-Calculadora pediatrica en progreso para apoyar el trabajo clinico diario: dosis, nutricion, ictericia neonatal, APGAR y mas.
+Calculadora pediátrica en progreso para apoyar el trabajo clinico diario: dosis, nutricion, ictericia neonatal, APGAR y mas.
 
 ## Estado
 
@@ -52,4 +52,4 @@ Esto es una herramienta de apoyo y no reemplaza el juicio clinico. Siempre valid
 
 ## Licencia
 
-Pendiente de definir.
+[Revista Gentes License Agreement for PedCalc](LICENSE.md)
