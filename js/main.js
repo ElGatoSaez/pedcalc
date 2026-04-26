@@ -12,7 +12,7 @@ async function loadDatabase() {
 // ══════════════════════════════════════════
 //  ESTADO
 // ══════════════════════════════════════════
-const state = { drug: null, route: null, pres: null };
+const state = { drug: null, route: null, regimen: null, pres: null };
 
 // ══════════════════════════════════════════
 //  REFERENCIAS DOM
@@ -25,14 +25,58 @@ const drugBar      = document.getElementById('drug-bar');
 const selName      = document.getElementById('sel-name');
 const routeGroup   = document.getElementById('route-group');
 const routeChips   = document.getElementById('route-chips');
+const regimenGroup = document.getElementById('regimen-group');
+const regimenSelect = document.getElementById('regimen-select');
 const presGroup    = document.getElementById('pres-group');
 const presSelect   = document.getElementById('pres-select');
 const resultPH     = document.getElementById('result-placeholder');
 const resultCont   = document.getElementById('result-content');
+const themeToggle  = document.getElementById('theme-toggle');
+const themeIcon    = document.getElementById('theme-toggle-icon');
+const THEME_STORAGE_KEY = 'pedcalc-theme';
 
 loadDatabase().catch(error => {
   console.error(error);
   drugDropdown.innerHTML = '<div class="drug-item">No se pudo cargar la base de datos</div>';
+});
+
+// ══════════════════════════════════════════
+//  MODO NOCHE
+// ══════════════════════════════════════════
+function getSavedTheme() {
+  try {
+    return localStorage.getItem(THEME_STORAGE_KEY);
+  } catch (error) {
+    return 'day';
+  }
+}
+
+function saveTheme(theme) {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch (error) {
+    // El modo sigue funcionando aunque el navegador no permita persistirlo.
+  }
+}
+
+function setTheme(theme) {
+  const isNight = theme === 'night';
+  if (isNight) {
+    document.documentElement.dataset.theme = 'night';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  saveTheme(isNight ? 'night' : 'day');
+  themeToggle.classList.toggle('active', isNight);
+  themeToggle.setAttribute('aria-pressed', String(isNight));
+  themeToggle.setAttribute('aria-label', isNight ? 'Desactivar modo noche' : 'Activar modo noche');
+  themeIcon.textContent = isNight ? '☀' : '☾';
+}
+
+setTheme(getSavedTheme() === 'night' ? 'night' : 'day');
+themeToggle.addEventListener('click', () => {
+  const nextTheme = document.documentElement.dataset.theme === 'night' ? 'day' : 'night';
+  setTheme(nextTheme);
 });
 
 // ══════════════════════════════════════════
@@ -77,28 +121,53 @@ document.addEventListener('click', e => {
 });
 
 function selectDrug(name) {
-  state.drug = name; state.route = null; state.pres = null;
+  state.drug = name; state.route = null; state.regimen = null; state.pres = null;
   drugDropdown.classList.remove('open');
   searchWrap.classList.add('hidden');
   drugBar.classList.add('visible');
   selName.textContent = name;
+  renderRegimens();
   renderRoutes();
   compute();
 }
 
 function clearDrug() {
-  state.drug = null; state.route = null; state.pres = null;
+  state.drug = null; state.route = null; state.regimen = null; state.pres = null;
   drugSearch.value = '';
   searchWrap.classList.remove('hidden');
   drugBar.classList.remove('visible');
   routeGroup.classList.add('hidden');
+  regimenGroup.classList.add('hidden');
   presGroup.classList.add('hidden');
   showPlaceholder();
 }
 
 // ══════════════════════════════════════════
-//  ROUTES & PRESENTATIONS
+//  REGIMENS, ROUTES & PRESENTATIONS
 // ══════════════════════════════════════════
+function renderRegimens() {
+  if (!state.drug) { regimenGroup.classList.add('hidden'); return; }
+
+  const regimens = DB[state.drug].regimens || [];
+  regimenSelect.innerHTML = '';
+  regimens.forEach((regimen, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = regimen.label;
+    regimenSelect.appendChild(opt);
+  });
+
+  if (!regimens.length) {
+    state.regimen = null;
+    regimenGroup.classList.add('hidden');
+    return;
+  }
+
+  state.regimen = 0;
+  regimenSelect.value = '0';
+  regimenGroup.classList.toggle('hidden', regimens.length === 1);
+}
+
 function renderRoutes() {
   if (!state.drug) { routeGroup.classList.add('hidden'); return; }
   const routes = Object.keys(DB[state.drug].routes);
@@ -134,9 +203,11 @@ function renderPresentations() {
   });
   presGroup.classList.remove('hidden');
   state.pres = 0;
+  presSelect.value = '0';
   compute();
 }
 
+regimenSelect.addEventListener('change', () => { state.regimen = parseInt(regimenSelect.value); compute(); });
 presSelect.addEventListener('change', () => { state.pres = parseInt(presSelect.value); compute(); });
 weightIn.addEventListener('input', compute);
 
@@ -148,33 +219,187 @@ function showPlaceholder() {
   resultCont.classList.add('hidden');
 }
 
+function formatNumber(value, decimals = 1) {
+  if (!Number.isFinite(value)) return '—';
+  const precision = Math.abs(value) > 0 && Math.abs(value) < 1 ? 2 : decimals;
+  return Number(value.toFixed(precision)).toString();
+}
+
+function formatRange(min, max, decimals = 1) {
+  if (Math.abs(min - max) < 0.001) return formatNumber(max, decimals);
+  return formatNumber(min, decimals) + '-' + formatNumber(max, decimals);
+}
+
+function doseLabel(regimen) {
+  const unit = regimen.doseBasis === 'day' ? 'mg/kg/día' : 'mg/kg/dosis';
+  return formatRange(regimen.doseMin, regimen.doseMax, 2) + ' ' + unit;
+}
+
+function doseNote(regimen, kg) {
+  const base = doseLabel(regimen);
+  const split = regimen.doseBasis === 'day' && regimen.dosesPerDay
+    ? ' dividido en ' + regimen.dosesPerDay + ' tomas'
+    : '';
+  return base + split + ' · paciente ' + formatNumber(kg, 1) + ' kg';
+}
+
+function computeDoseRange(kg, regimen) {
+  const doseMin = Number(regimen.doseMin);
+  const doseMax = Number(regimen.doseMax ?? regimen.doseMin);
+  const dosesPerDay = Number(regimen.dosesPerDay || 1);
+  let rawMin;
+  let rawMax;
+  let cappedMin;
+  let cappedMax;
+  let capped = false;
+
+  if (regimen.doseBasis === 'day') {
+    rawMin = kg * doseMin;
+    rawMax = kg * doseMax;
+    cappedMin = rawMin;
+    cappedMax = rawMax;
+
+    if (Number.isFinite(regimen.maxDaily)) {
+      cappedMin = Math.min(cappedMin, regimen.maxDaily);
+      cappedMax = Math.min(cappedMax, regimen.maxDaily);
+    }
+
+    if (Number.isFinite(regimen.maxDailyMgKg)) {
+      const dailyByWeight = kg * regimen.maxDailyMgKg;
+      cappedMin = Math.min(cappedMin, dailyByWeight);
+      cappedMax = Math.min(cappedMax, dailyByWeight);
+    }
+
+    capped = cappedMin < rawMin || cappedMax < rawMax;
+    rawMin = rawMin / dosesPerDay;
+    rawMax = rawMax / dosesPerDay;
+    cappedMin = cappedMin / dosesPerDay;
+    cappedMax = cappedMax / dosesPerDay;
+  } else {
+    rawMin = kg * doseMin;
+    rawMax = kg * doseMax;
+    cappedMin = rawMin;
+    cappedMax = rawMax;
+  }
+
+  if (Number.isFinite(regimen.maxPerDose)) {
+    const nextMin = Math.min(cappedMin, regimen.maxPerDose);
+    const nextMax = Math.min(cappedMax, regimen.maxPerDose);
+    capped = capped || nextMin < cappedMin || nextMax < cappedMax;
+    cappedMin = nextMin;
+    cappedMax = nextMax;
+  }
+
+  return { min: cappedMin, max: cappedMax, rawMin, rawMax, capped };
+}
+
+function computeOutput(kg, presentation, doseRange) {
+  if (presentation.outputMode === 'dropsPerKg') {
+    return {
+      value: String(Math.round(kg * presentation.dropsPerKg)),
+      unit: presentation.outputUnitLabel || 'gotas',
+      notes: []
+    };
+  }
+
+  if (Number.isFinite(presentation.mgPerUnit) && Number.isFinite(presentation.unitVol)) {
+    const min = (doseRange.min / presentation.mgPerUnit) * presentation.unitVol;
+    const max = (doseRange.max / presentation.mgPerUnit) * presentation.unitVol;
+    return {
+      value: formatRange(min, max, 1),
+      unit: presentation.unitLabel || 'unidad',
+      notes: []
+    };
+  }
+
+  return {
+    value: formatRange(doseRange.min, doseRange.max, 1),
+    unit: presentation.unitLabel || 'mg',
+    notes: ['Se muestra dosis en mg porque esta presentación no tiene concentración cargada.']
+  };
+}
+
+function maxSummary(regimen, kg) {
+  const parts = [];
+  if (regimen.maxPerDoseDisplay) {
+    parts.push('Máx. por dosis: ' + regimen.maxPerDoseDisplay);
+  } else if (Number.isFinite(regimen.maxPerDose)) {
+    parts.push('Máx. por dosis: ' + formatNumber(regimen.maxPerDose, 1) + ' mg');
+  }
+
+  if (Number.isFinite(regimen.maxDaily)) {
+    parts.push('Máx. diario: ' + formatNumber(regimen.maxDaily, 1) + ' mg/día');
+  }
+
+  if (Number.isFinite(regimen.maxDailyMgKg)) {
+    parts.push(
+      'Máx. diario: ' + formatNumber(kg * regimen.maxDailyMgKg, 1) +
+      ' mg/día (' + formatNumber(regimen.maxDailyMgKg, 2) + ' mg/kg/día)'
+    );
+  }
+
+  return parts.join(' · ');
+}
+
+function escapeHTML(value) {
+  const div = document.createElement('div');
+  div.textContent = String(value);
+  return div.innerHTML;
+}
+
+function renderAlerts({ capped, regimen, presentation, outputNotes, kg }) {
+  const alertWrap = document.getElementById('res-alert-wrap');
+  const alerts = [];
+  const maxText = maxSummary(regimen, kg);
+
+  if (capped && maxText) {
+    alerts.push({ type: 'danger', text: 'Dosis ajustada al máximo cargado: ' + maxText });
+  } else if (maxText) {
+    alerts.push({ type: 'warn', text: maxText });
+  }
+
+  const notes = [
+    ...(regimen.notes || []),
+    ...(presentation.notes || []),
+    ...(outputNotes || [])
+  ];
+
+  [...new Set(notes)].forEach(note => alerts.push({ type: 'info', text: note }));
+
+  alertWrap.innerHTML = alerts.map(alert => (
+    `<div class="alert ${alert.type}"><div class="alert-dot"></div><div>${escapeHTML(alert.text)}</div></div>`
+  )).join('');
+}
+
 function compute() {
   const kg = parseFloat(weightIn.value);
-  if (!kg || !state.drug || state.route === null || state.pres === null) { showPlaceholder(); return; }
+  if (!kg || !state.drug || state.route === null || state.regimen === null || state.pres === null) {
+    showPlaceholder();
+    return;
+  }
 
-  const p = DB[state.drug].routes[state.route][state.pres];
-  const mgRaw   = +(kg * p.dose).toFixed(3);
-  const mgDose  = Math.min(mgRaw, p.doseAbsMax);
-  const capped  = mgDose < mgRaw;
-  const volume  = +((mgDose / p.mgPerUnit) * p.unitVol).toFixed(2);
-  const dispVol = volume % 1 === 0 ? volume.toString() : volume.toFixed(1);
-  const mgMaxDia = +(Math.min(kg * p.doseMax, p.doseAbsMax)).toFixed(1);
+  const drug = DB[state.drug];
+  const regimen = drug.regimens[state.regimen];
+  const p = drug.routes[state.route][state.pres];
+  const doseRange = computeDoseRange(kg, regimen);
+  const output = computeOutput(kg, p, doseRange);
 
   document.getElementById('res-drug').textContent  = state.drug + ' · ' + p.label;
-  document.getElementById('res-vol').textContent   = dispVol;
-  document.getElementById('res-unit').textContent  = p.unitLabel;
-  document.getElementById('res-note').textContent  = p.dose + ' mg/kg/dosis · paciente ' + kg + ' kg';
-  document.getElementById('res-mg').textContent    = mgDose.toFixed(1) + ' mg';
-  document.getElementById('res-freq').textContent  = p.freq;
-  document.getElementById('res-mgkg').textContent  = p.dose + ' mg/kg';
+  document.getElementById('res-vol').textContent   = output.value;
+  document.getElementById('res-unit').textContent  = output.unit;
+  document.getElementById('res-note').textContent  = doseNote(regimen, kg);
+  document.getElementById('res-mg').textContent    = formatRange(doseRange.min, doseRange.max, 1) + ' mg';
+  document.getElementById('res-freq').textContent  = regimen.freq || '—';
+  document.getElementById('res-mgkg').textContent  = doseLabel(regimen);
   document.getElementById('res-route').textContent = state.route;
 
-  const alertWrap = document.getElementById('res-alert-wrap');
-  if (capped) {
-    alertWrap.innerHTML = `<div class="alert danger"><div class="alert-dot"></div><div>Dosis ajustada al máximo absoluto: <strong>${p.doseAbsMax} mg/dosis</strong></div></div>`;
-  } else {
-    alertWrap.innerHTML = `<div class="alert warn"><div class="alert-dot"></div><div>Máx. recomendado: <strong>${mgMaxDia} mg/dosis</strong> · Máx. absoluto: <strong>${p.doseAbsMax} mg</strong></div></div>`;
-  }
+  renderAlerts({
+    capped: doseRange.capped,
+    regimen,
+    presentation: p,
+    outputNotes: output.notes,
+    kg
+  });
 
   resultPH.classList.add('hidden');
   resultCont.classList.remove('hidden');
